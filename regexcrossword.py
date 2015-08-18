@@ -101,8 +101,8 @@ class Crossword(object):
 
             self.solutions[index] = self.possibilities[index][-1]
             self.possibilities[index] = self.possibilities[index][:-1]
-            if self.check_fuzzy_solution():
-                if self.is_solved():
+            if self._check_fuzzy_solution():
+                if self._is_solved():
                     return ''.join(self.solutions)
                 index += 1
             else:
@@ -111,14 +111,14 @@ class Crossword(object):
                     self.possibilities[index] = self.possibility
                     index -= 1
 
-    def check_fuzzy_solution(self):
+    def _check_fuzzy_solution(self):
         """
         Return True if the current values in self.solution returns a fuzzy
         match for all rows/columns
         """
         # confirm all rows
         for row_index in xrange(1, self.height + 1):
-            row_str = ''.join(self.get_solutions_for_row(row_index))
+            row_str = ''.join(self._get_solutions_for_row(row_index))
             row_regexes = self.regexes['{}A'.format(row_index)]
             for regex in row_regexes:
                 if not is_fuzzy_match(row_str, regex):
@@ -126,7 +126,7 @@ class Crossword(object):
 
         # confirm all columns
         for col_index in xrange(1, self.width + 1):
-            col_str = ''.join(self.get_solutions_for_col(col_index))
+            col_str = ''.join(self._get_solutions_for_col(col_index))
             col_regexes = self.regexes['{}D'.format(col_index)]
             for regex in col_regexes:
                 if not is_fuzzy_match(col_str, regex):
@@ -134,7 +134,7 @@ class Crossword(object):
 
         return True
 
-    def get_solutions_for_row(self, index):
+    def _get_solutions_for_row(self, index):
         """
         Given an integer for the index, return the current solutions for that
         row
@@ -149,7 +149,7 @@ class Crossword(object):
         end = begin + self.width
         return self.solutions[begin:end]
 
-    def get_solutions_for_col(self, index):
+    def _get_solutions_for_col(self, index):
         """
         Given an integer for the index, return the current solutions for that
         column
@@ -164,7 +164,7 @@ class Crossword(object):
         interval = self.width
         return self.solutions[begin::interval]
 
-    def is_solved(self):
+    def _is_solved(self):
         """
         Return True if all elements of self.solution have values (a space is
         considered a value)
@@ -181,9 +181,6 @@ def is_fuzzy_match(string, regex):
     is given of the string would match the regular expression.
 
     However, if string = 'B' and regex = 'A{3}', then return False.
-
-    Third required argument is the total length that the string should be when
-    solved.
     """
     pattern = re.compile(regex)
     if pattern.fullmatch(string, partial=True):
@@ -193,34 +190,3 @@ def is_fuzzy_match(string, regex):
 
 class UnsolvableError(Exception):
     pass
-
-
-if __name__ == '__main__':
-    # http://regexcrossword.com/playerpuzzles/638abba5-5cfa-430c-b26a-33d1f4f42dab
-    cw = Crossword(9, 9)
-    cw.set_possibility(r'.- ')
-
-    cw.add_regex(1, 'A', r'(.).(\1).(\2).--.')
-    cw.add_regex(2, 'A', r'\s\.\s+-\.+-\s+')
-    cw.add_regex(3, 'A', r'.?(-\.|\s\.)+[^-.]')
-    cw.add_regex(4, 'A', r'(.)(\1)(\2)(.)\.+\4.')
-    cw.add_regex(5, 'A', r'[.\s]+[-\s]+')
-    cw.add_regex(6, 'A', r'-.\.-.+(.)\1')
-    cw.add_regex(7, 'A', r'.[^-]+\s[^-]+')
-    cw.add_regex(9, 'A', r'(-\.|\s)+([^\s])\2{2}')
-    cw.add_regex(9, 'A', r'\s+-+\s(\..)+')
-
-    cw.add_regex(1, 'D', r'\.(.)(.)\2[.-]+\1{3}')
-    cw.add_regex(2, 'D', r'([-.]+).\1\s+-+')
-    cw.add_regex(3, 'D', r'.(.)--\1\.+-')
-    cw.add_regex(4, 'D', r'\s([\s-]\.)*-{1,2}')
-    cw.add_regex(5, 'D', r'[.\s]+-(\.[^.]){1,2}')
-    cw.add_regex(6, 'D', r'\s\.+-(\s\.)+')
-    cw.add_regex(7, 'D', r'.(([^.])\2)(.)\s+-\3\1')
-    cw.add_regex(8, 'D', r'-.\.\s(-?\.)+')
-    cw.add_regex(9, 'D', r'\.\s+\.-\.\s+-\.')
-
-    try:
-        print cw.solve()
-    except Exception as e:
-        print e.__class__.__name__ + ': ' + str(e)

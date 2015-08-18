@@ -13,13 +13,13 @@ class TestCrossword(unittest.TestCase):
 
     def test_is_solved(self):
         cw = Crossword(2, 2)
-        self.assertFalse(cw.is_solved())
+        self.assertFalse(cw._is_solved())
         cw.solutions = ['A', 'A', 'A', 'A']
-        self.assertTrue(cw.is_solved())
+        self.assertTrue(cw._is_solved())
         cw.solutions = ['A', '', 'A', '']
-        self.assertFalse(cw.is_solved())
+        self.assertFalse(cw._is_solved())
         cw.solutions = ['A', ' ', 'B']
-        self.assertTrue(cw.is_solved())
+        self.assertTrue(cw._is_solved())
 
     def test_init_regexes(self):
         cw = Crossword(2, 2)
@@ -32,21 +32,21 @@ class TestCrossword(unittest.TestCase):
         cw = Crossword(2, 2)
         cw.solutions = ['A', 'B', 'C', 'D']
         self.assertEqual(
-            cw.get_solutions_for_row(1),
+            cw._get_solutions_for_row(1),
             ['A', 'B']
         )
         self.assertEqual(
-            cw.get_solutions_for_row(2),
+            cw._get_solutions_for_row(2),
             ['C', 'D']
         )
         cw = Crossword(3, 3)
         cw.solutions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
         self.assertEqual(
-            cw.get_solutions_for_row(1),
+            cw._get_solutions_for_row(1),
             ['A', 'B', 'C']
         )
         self.assertEqual(
-            cw.get_solutions_for_row(2),
+            cw._get_solutions_for_row(2),
             ['D', 'E', 'F']
         )
 
@@ -54,21 +54,21 @@ class TestCrossword(unittest.TestCase):
         cw = Crossword(2, 2)
         cw.solutions = ['A', 'B', 'C', 'D']
         self.assertEqual(
-            cw.get_solutions_for_col(1),
+            cw._get_solutions_for_col(1),
             ['A', 'C']
         )
         self.assertEqual(
-            cw.get_solutions_for_col(2),
+            cw._get_solutions_for_col(2),
             ['B', 'D']
         )
         cw = Crossword(3, 3)
         cw.solutions = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I']
         self.assertEqual(
-            cw.get_solutions_for_col(1),
+            cw._get_solutions_for_col(1),
             ['A', 'D', 'G']
         )
         self.assertEqual(
-            cw.get_solutions_for_col(2),
+            cw._get_solutions_for_col(2),
             ['B', 'E', 'H']
         )
 
