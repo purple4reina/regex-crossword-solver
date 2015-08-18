@@ -70,20 +70,21 @@ class Crossword(object):
 
     def solve(self):
         """
-        Solve the puzzle and return the results as a list. Results represent
+        Solve the puzzle and return the results as a string. Results represent
         the answers read from left to right, as when reading a book.
 
         Uses the Backtracking algoritm
         https://en.wikipedia.org/wiki/Backtracking
 
-        select next available for this spot from the available list
-        if matches:
-            if last spot:
-                yay!
-            go to next spot
-        if doesn't match:
-            set this spot back to all possibilities
-            go back to previous spot
+            select next available for this spot from the available list
+            if matches:
+                if last spot:
+                    yay!
+                else:
+                    go to next spot
+            if doesn't match:
+                set this spot back to all possibilities
+                go back to previous spot
 
         Recursion was attempted first, but python's maximum recursion depth was
         hit after trying to solve a 5x5 puzzle. A while loop is being used
