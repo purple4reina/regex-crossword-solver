@@ -68,7 +68,7 @@ class Crossword(object):
             raise ValueError('Index cannot be greater than height')
         self.regexes['{}{}'.format(index, direction)].append(regex)
 
-    def solve(self):
+    def solve(self, return_all=False):
         """
         Solve the puzzle and return the results as a string. Results represent
         the answers read from left to right, as when reading a book.
@@ -89,10 +89,17 @@ class Crossword(object):
         Recursion was attempted first, but python's maximum recursion depth was
         hit after trying to solve a 5x5 puzzle. A while loop is being used
         instead.
+
+        Optional arg `return_all` when set to True means this method will
+        return a list of all possible solutions, else, only the first found
+        solution is returned.
         """
         index = 0
+        sols = []
         while True:
             if index < 0:
+                if return_all:
+                    return sols
                 raise UnsolvableError('Puzzle is unsolvable!')
             elif not self.possibilities[index]:
                 self.solutions[index] = ''
@@ -104,7 +111,10 @@ class Crossword(object):
             self.possibilities[index] = self.possibilities[index][:-1]
             if self._check_fuzzy_solution():
                 if self._is_solved():
-                    return ''.join(self.solutions)
+                    if not return_all:
+                        return ''.join(self.solutions)
+                    sols.append(''.join(self.solutions))
+                    continue
                 index += 1
             else:
                 if not self.possibilities[index]:

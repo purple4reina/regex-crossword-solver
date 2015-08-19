@@ -153,6 +153,41 @@ class TestCrossword(unittest.TestCase):
         # this solution is offensive and I do not condone it
         self.assertEqual(cw.solve(), 'PREPARE UR ANUS')
 
+    def test_solve_2x2_with_doubles(self):
+        # http://regexcrossword.com/challenges/cities/puzzles/1
+        cw = Crossword(2, 2)
+        cw.add_regex(1, 'A', r'[LINE]+')
+        cw.add_regex(1, 'A', r'[ISLE]+')
+        cw.add_regex(2, 'A', r'[LAM]+')
+        cw.add_regex(2, 'A', r'[MALE]+')
+
+        cw.add_regex(1, 'D', r'(MA|LM)')
+        cw.add_regex(1, 'D', r'[LAME]*')
+        cw.add_regex(2, 'D', r'[^MESH]+')
+        cw.add_regex(2, 'D', r'[^LES]+')
+
+        self.assertEqual(cw.solve(), 'LIMA')
+
+    def test_solve_3x3_with_special_chars(self):
+        # http://regexcrossword.com/challenges/volapuk/puzzles/2
+        cw = Crossword(3, 3)
+        cw.add_to_possibility('.\\')
+        cw.add_regex(1, 'A', r'(Y|\d|M)+')
+        cw.add_regex(1, 'A', r'[^IB][0-3]Y')
+        cw.add_regex(2, 'A', r'(.H|P|.P)+')
+        cw.add_regex(2, 'A', r'^(P|Y)*(PA|\.H$)')
+        cw.add_regex(3, 'A', r'[\dIP\s].+')
+        cw.add_regex(3, 'A', r'[PA\\d\d]+')
+
+        cw.add_regex(1, 'D', r'M[\DIP]*')
+        cw.add_regex(1, 'D', r'(M|A|P)+')
+        cw.add_regex(2, 'D', r'(\\d|\d.)[\\\/B]')
+        cw.add_regex(2, 'D', r'[^2O13]\.\\*(A|P)?')
+        cw.add_regex(3, 'D', r'(Y$|YH|\d$)+')
+        cw.add_regex(3, 'D', r'[HOW2Y]+')
+
+        self.assertEqual(cw.solve(), 'M0YP.HP\\2')
+
 
 class TestIsFuzzyMatch(unittest.TestCase):
 
