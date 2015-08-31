@@ -132,7 +132,7 @@ class Crossword(object):
             row_str = ''.join(self._get_solutions_for_row(row_index))
             row_regexes = self.regexes['{}A'.format(row_index)]
             for regex in row_regexes:
-                if not is_fuzzy_match(row_str, regex):
+                if not is_fuzzy_match(row_str, regex, max_length=self.width):
                     return False
 
         # confirm all columns
@@ -140,7 +140,7 @@ class Crossword(object):
             col_str = ''.join(self._get_solutions_for_col(col_index))
             col_regexes = self.regexes['{}D'.format(col_index)]
             for regex in col_regexes:
-                if not is_fuzzy_match(col_str, regex):
+                if not is_fuzzy_match(col_str, regex, max_length=self.height):
                     return False
 
         return True
@@ -183,7 +183,7 @@ class Crossword(object):
         return all(self.solutions)
 
 
-def is_fuzzy_match(string, regex):
+def is_fuzzy_match(string, regex, max_length=None):
     """
     Given a string and a regular expression, return True if the string matches
     the beginning of the regex.
@@ -193,8 +193,10 @@ def is_fuzzy_match(string, regex):
 
     However, if string = 'B' and regex = 'A{3}', then return False.
     """
+    partial = len(string) != max_length
+
     pattern = re.compile(regex)
-    if pattern.fullmatch(string, partial=True):
+    if pattern.fullmatch(string, partial=partial):
         return True
     return False
 

@@ -204,6 +204,14 @@ class TestIsFuzzyMatch(unittest.TestCase):
         self.assertTrue(is_fuzzy_match('A', regex))
         self.assertTrue(is_fuzzy_match('A ', regex))
         self.assertTrue(is_fuzzy_match('A A', regex))
+        regex = 'AA\.'
+        self.assertTrue(is_fuzzy_match('A', regex))
+        self.assertTrue(is_fuzzy_match('AA', regex))
+        self.assertTrue(is_fuzzy_match('AA.', regex))
+        regex = '[^ABC]{3}'
+        self.assertTrue(is_fuzzy_match('X', regex))
+        self.assertTrue(is_fuzzy_match('XX', regex))
+        self.assertTrue(is_fuzzy_match('XXX', regex))
 
     def test_false(self):
         regex = 'AAA'
@@ -217,6 +225,17 @@ class TestIsFuzzyMatch(unittest.TestCase):
         self.assertFalse(is_fuzzy_match('B', regex))
         self.assertFalse(is_fuzzy_match('BB', regex))
         self.assertFalse(is_fuzzy_match('BBB', regex))
+        regex = '[^ABC]{3}'
+        self.assertFalse(is_fuzzy_match('B', regex))
+        self.assertFalse(is_fuzzy_match('XXA', regex))
+        self.assertFalse(is_fuzzy_match('AXX', regex))
+        self.assertFalse(is_fuzzy_match('ABC', regex))
+
+    def test_max_length(self):
+        regex = r'A+B'
+        self.assertFalse(is_fuzzy_match('AA', regex, max_length=2))
+        self.assertTrue(is_fuzzy_match('AB', regex, max_length=2))
+        self.assertTrue(is_fuzzy_match('A', regex, max_length=2))
 
 
 if __name__ == '__main__':
