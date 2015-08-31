@@ -111,9 +111,10 @@ class Crossword(object):
             self.possibilities[index] = self.possibilities[index][:-1]
             if self._check_fuzzy_solution():
                 if self._is_solved():
+                    this_sol = ''.join(self.solutions)
                     if not return_all:
-                        return ''.join(self.solutions)
-                    sols.append(''.join(self.solutions))
+                        return this_sol
+                    sols.append(this_sol)
                     continue
                 index += 1
             else:
